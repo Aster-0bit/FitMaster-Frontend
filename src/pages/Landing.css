@@ -1,0 +1,154 @@
+
+
+/* Contenedor principal */
+.landing-container {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Estilo para el banner */
+.banner {
+  display: flex;
+  background: url('./../assets/banner.png') no-repeat center center;
+  background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+  padding: 60px 20px;
+  position: relative;
+  color: white;
+  height: 120vh; /* Usa una altura basada en el viewport */
+  min-height: 400px; /* Asegura que el banner tenga una altura mínima */
+  max-height: 800px; /* Asigna una altura máxima */
+  font-weight: bold;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.banner-content header {
+  max-width: 600px;
+}
+
+.logo {
+  width: 100px; /* Ajusta el tamaño según necesites */
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.banner-description {
+  border: 2px solid white;
+  border-radius: 5px;
+  color: white;
+  background-color: black;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  padding: 2rem;
+}
+
+.btn {
+  padding: 15px 30px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #3498db;
+  color: white;
+}
+
+.banner-phone {
+  height: 400px;
+  margin-left: 50px;
+}
+
+/* Estilos para la sección de características */
+.features-section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.features-title {
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.feature {
+  text-align: center;
+  max-width: 200px;
+}
+
+.feature img {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.feature p {
+  font-size: 1rem;
+}
+
+.login-btn {
+  padding-left: 33px;
+  padding-right: 33px;
+  padding-bottom: 16px;
+  padding-top: 16px;
+  border-radius: 9px;
+  background: #d5f365;
+  border: none;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.4s;
+  color: black;
+  font-weight: bold;
+ }
+ 
+ .login-btn:hover {
+  box-shadow: 7px 5px 56px -1px #C3D900;
+ }
+ 
+ .login-btn:active {
+  transform: scale(0.97);
+  box-shadow: 7px 5px 56px -10px #C3D900;
+ }
+
+ 
+
+ .signup-btn {
+  padding-left: 33px;
+  padding-right: 33px;
+  padding-bottom: 16px;
+  padding-top: 16px;
+  border-radius: 9px;
+  background: #d5f365;
+  border: none;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.4s;
+  color: black;
+  font-weight: bold;
+  margin-right: 2%;
+ }
+ 
+ .signup-btn:hover {
+  box-shadow: 7px 5px 56px -1px #C3D900;
+ }
+ 
+ .signup-btn:active {
+  transform: scale(0.97);
+  box-shadow: 7px 5px 56px -10px #C3D900;
+ }
