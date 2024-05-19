@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../auth/AuthProvider';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import './Signup.css';
 import { API_URL } from '../auth/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -113,7 +113,7 @@ export default function Signup() {
             <button className="form-btn" type="submit">Registrarse</button>
           </form>
           <p className="sign-up-label">
-            ¿Ya tienes una cuenta?<span className="sign-up-link">Inicia sesión</span>
+            ¿Ya tienes una cuenta?<span className="sign-up-link"><Link to="/login">Inicia sesión</Link></span>
           </p>
         </div>
       </div>

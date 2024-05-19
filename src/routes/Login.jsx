@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import './Login.css'
 import { API_URL } from '../auth/constants'
 
@@ -59,11 +59,11 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <p className="page-link">
-              <span className="page-link-label">¿Olvidaste tu contraseña?</span>
+              <span className="page-link-label"><Link to="/forgot-password">¿Olvidaste tu contraseña?</Link></span>
             </p>
             <button className="form-btn" type="submit">Log in</button>
           </form>
-          <p className="sign-up-label">No tienes cuenta?<span className="sign-up-link">Registrate</span>
+          <p className="sign-up-label">No tienes cuenta?<span className="sign-up-link"><Link to="/signup">Registrate</Link></span>
           </p>
         </div>
       </div>
