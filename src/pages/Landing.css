@@ -9,7 +9,7 @@
 /* Estilo para el banner */
 .banner {
   display: flex;
-  background: url('./../assets/banner.png') no-repeat center center;
+  background: url('assets/banner.png') no-repeat center center;
   background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
   padding: 60px 20px;
   position: relative;

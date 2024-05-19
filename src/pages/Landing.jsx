@@ -7,7 +7,7 @@ export function Landing() {
       <section className="banner">
         <div className="banner-content">
           <header>
-            <img src="src/assets/logo.svg" alt="Logo" className="logo" />
+            <img src="/assets/logo.svg" alt="Logo" className="logo" />
             <h1 className="title">FitMaster</h1>
             <p className="banner-description">
               Tu compañero ideal para alcanzar tus metas de fitness. Comienza a registrar tus rutinas ahora mismo!
