@@ -107,3 +107,9 @@
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
+
+.back-link {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}

@@ -12,8 +12,10 @@ export function Landing() {
             <p className="banner-description">
               Tu compañero ideal para alcanzar tus metas de fitness. Comienza a registrar tus rutinas ahora mismo!
             </p>
-            <Link to="/signup" className="btn signup-btn">Registrarse</Link>
-            <Link to="/login" className="btn login-btn">Iniciar sesión</Link>
+            <div className='buttons'>
+              <Link to="/signup" className="btn signup-btn">Registrarse</Link>
+              <Link to="/login" className="btn login-btn">Iniciar sesión</Link>
+            </div>
           </header>
         </div>
       </section>

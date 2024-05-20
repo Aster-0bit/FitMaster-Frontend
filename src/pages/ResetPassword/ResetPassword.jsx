@@ -64,7 +64,7 @@ export default function ResetPassword() {
                 required
               />
               <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
+                icon={showPassword ? faEye : faEyeSlash}
                 onClick={() => setShowPassword(!showPassword)}
                 className="password-icon"
               />
@@ -79,7 +79,7 @@ export default function ResetPassword() {
                 required
               />
               <FontAwesomeIcon
-                icon={showConfirmPassword ? faEyeSlash : faEye}
+                icon={showConfirmPassword ? faEye : faEyeSlash}
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="password-icon"
               />

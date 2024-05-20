@@ -3,11 +3,14 @@ import { useAuth } from '../auth/AuthProvider'
 import { Navigate, Link } from 'react-router-dom'
 import './Login.css'
 import { API_URL } from '../auth/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default function Login() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
 
   const auth = useAuth()
 
@@ -42,6 +45,7 @@ export default function Login() {
     <div className="login-page">
       <div className="form-wrapper">
         <div className="form-container">
+        <Link to="/" className="back-link"><FontAwesomeIcon icon={faChevronLeft} /> Atrás</Link>
           <p className="title">Bienvenido de nuevo</p>
           <form className="form" onSubmit={handleSubmit}>
             <input
@@ -51,13 +55,20 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <input
-              type="password"
-              className="input"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <FontAwesomeIcon
+                icon={showPassword ? faEye : faEyeSlash}
+                onClick={() => setShowPassword(!showPassword)}
+                className="password-icon"
+              />
+            </div>
             <p className="page-link">
               <span className="page-link-label"><Link to="/forgot-password">¿Olvidaste tu contraseña?</Link></span>
             </p>

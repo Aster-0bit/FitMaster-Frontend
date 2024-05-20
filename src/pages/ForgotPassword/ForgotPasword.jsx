@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { API_URL } from '../../auth/constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import './ForgotPassword.css';
 
 export default function ForgotPassword() {
@@ -33,6 +36,7 @@ export default function ForgotPassword() {
     <div className="forgot-password-page">
       <div className="form-wrapper">
         <div className="form-container">
+          <Link to="/login" className="back-link"><FontAwesomeIcon icon={faChevronLeft} /> Atrás</Link>
           <p className="title">Recuperar contraseña</p>
           <form className="form" onSubmit={handleSubmit}>
             <input

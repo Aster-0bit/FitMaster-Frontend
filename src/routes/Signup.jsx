@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useAuth } from '../auth/AuthProvider';
-import { Navigate, Link } from 'react-router-dom';
-import './Signup.css';
-import { API_URL } from '../auth/constants';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react'
+import { useAuth } from '../auth/AuthProvider'
+import { Navigate, Link } from 'react-router-dom'
+import './Signup.css'
+import { API_URL } from '../auth/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -61,6 +61,7 @@ export default function Signup() {
     <div className="signup-page">
       <div className="form-wrapper">
         <div className="form-container">
+          <Link to="/" className="back-link"><FontAwesomeIcon icon={faChevronLeft} /> Atrás</Link>
           <p className="title">Crear cuenta</p>
           <form className="form" onSubmit={handleSubmit}>
             <input
