@@ -6,6 +6,7 @@ import Signup from './routes/Signup.jsx'
 import Login from './routes/Login.jsx'
 import Dashboard from './routes/Dashboard.jsx'
 import ProtectedRoute from './routes/ProtectedRoute.jsx'
+import PublicRoute from './routes/PublicRoute.jsx'
 import { AuthProvider } from './auth/AuthProvider.jsx'
 import { Landing } from './pages/Landing.jsx'
 import ForgotPassword from './pages/ForgotPassword/ForgotPasword.jsx'
@@ -14,23 +15,29 @@ import ResetPassword from './pages/ResetPassword/ResetPassword.jsx'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Landing />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/signup',
-    element: <Signup />,
-  },
-  {
-    path: '/forgot-password',
-    element: <ForgotPassword />,
-  },
-  {
-    path: '/reset-password/:token',
-    element: <ResetPassword />,
+    element: <PublicRoute />,
+    children: [
+      {
+        path: '/',
+        element: <Landing />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/signup',
+        element: <Signup />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPassword />,
+      },
+      {
+        path: '/reset-password/:token',
+        element: <ResetPassword />,
+      },
+    ]
   },
   {
     path: '/',
@@ -42,13 +49,16 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router}/>
-    </AuthProvider>
+      <AuthProvider>
+        <div>
+          <RouterProvider router={router} />
+          {/* Aquí puedes agregar otros componentes globales si los tienes */}
+        </div>
+      </AuthProvider>
   </React.StrictMode>,
 )
