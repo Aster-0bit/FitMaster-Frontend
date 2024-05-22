@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom'
 import './Landing.css'
+import { useAuth } from '../auth/AuthProvider'
+import { Navigate } from 'react-router-dom'
 
 export function Landing() {
+
+  const auth = useAuth()
+
+  if(auth.isAuthenticated) {
+    return <Navigate to="/dashboard" />
+  }
+
   return (
     <div className="landing-container">
       <section className="banner">

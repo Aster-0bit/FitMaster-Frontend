@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { Navigate, Link } from 'react-router-dom'
 import './Login.css'
@@ -23,14 +23,17 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'
+        body: JSON.stringify({ email, password })
       })
 
       if(response.ok){
-        const data = await response.json()
-        auth.login(data.token)
         console.log('Usuario autenticado')
+        const userData = await response.json()
+
+        if(userData.accessToken && userData.refreshToken){
+          auth.saveUser(userData)
+        }
+
       }else {
         console.error('Error en la autenticación')
       }
@@ -39,10 +42,6 @@ export default function Login() {
       console.error('Error en la autenticación', error)
     }
   }
-
-  useEffect(() => {
-    console.log("isAuthenticated changed:", auth.isAuthenticated);
-  }, [auth.isAuthenticated]);
 
   if(auth.isAuthenticated) {
     return <Navigate to="/dashboard" />
