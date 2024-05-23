@@ -1,20 +1,40 @@
-body {
-  background-color: black;
+.dashboardPage *{
+
+}
+
+.dashboardPage {
+  background-color: #282828;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2%;
+  align-items: center;
+}
+
+.dashboardPage .header {
+  background-color: #000;
   color: white;
+  width: 100%;
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content:center;
+  gap : 4rem;
 }
 
-.button {
-  background: none; /* Elimina el fondo */
-  border: none; /* Elimina el borde */
-  padding: 0; /* Elimina el padding */
-  margin: 0; /* Elimina el margen */
-  cursor: pointer; /* Cambia el cursor al estilo de un botón */
-  display: inline-flex; /* Alinea el contenido centrado */
-  align-items: center; /* Alinea verticalmente el contenido */
-  justify-content: center; /* Alinea horizontalmente el contenido */
-  font-size: 24px; /* Tamaño del icono */
+.dashboardPage .header h1{
+  width: 200px;
+  text-align: center;
 }
 
-.icon-button:focus {
-  outline: none; /* Elimina el contorno al hacer focus */
+.dashboardPage .header .icon-button{
+  color: #20FFC9;
+}
+
+main.content{
+  width: 70%;
+  background-color: #000;
+  min-height: 85%;
+  border-radius: 5px;
 }

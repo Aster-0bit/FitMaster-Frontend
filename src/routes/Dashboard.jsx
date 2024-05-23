@@ -41,13 +41,18 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <header>
-        <button className="button" onClick={handlePrevDay}><FontAwesomeIcon icon={faChevronLeft} /></button>
-          <h1>{dayInfo.name}</h1>
-        <button className="button" onClick={handleNextDay}><FontAwesomeIcon icon={faChevronRight} /></button>
-        
+    <div className="dashboardPage">
+      <header className="header">
+        <span className="icon-button" onClick={handlePrevDay} >
+          <FontAwesomeIcon icon={faChevronLeft} className="fa-2x"/>
+        </span>
+        <h1>{dayInfo.name}</h1>
+        <span className="icon-button" onClick={handleNextDay}>
+          <FontAwesomeIcon icon={faChevronRight} className="fa-2x"/>
+        </span>
       </header>
-    </>
+      <main className="content">
+      </main>
+    </div>
   )
 }
