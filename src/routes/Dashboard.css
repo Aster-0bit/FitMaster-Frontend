@@ -1,0 +1,20 @@
+body {
+  background-color: black;
+  color: white;
+}
+
+.button {
+  background: none; /* Elimina el fondo */
+  border: none; /* Elimina el borde */
+  padding: 0; /* Elimina el padding */
+  margin: 0; /* Elimina el margen */
+  cursor: pointer; /* Cambia el cursor al estilo de un botón */
+  display: inline-flex; /* Alinea el contenido centrado */
+  align-items: center; /* Alinea verticalmente el contenido */
+  justify-content: center; /* Alinea horizontalmente el contenido */
+  font-size: 24px; /* Tamaño del icono */
+}
+
+.icon-button:focus {
+  outline: none; /* Elimina el contorno al hacer focus */
+}

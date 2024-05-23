@@ -1,6 +1,5 @@
 import { useContext, createContext, useState, useEffect } from 'react'
 import { API_URL } from './constants'
-import { json } from 'react-router-dom'
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => '',
