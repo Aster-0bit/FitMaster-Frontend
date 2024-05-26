@@ -1,58 +1,37 @@
-import { useEffect, useState } from "react"
-import './Dashboard.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { getDayInfo } from './utils';
+import { useState } from 'react';
+import Navbar from '../common/Navbar/Navbar';
+import Routine from '../pages/Routine/Routine';
+import Search from '../pages/Search/Search';
+import Progress from '../pages/Progress/Progress';
+import Profile from '../pages/Profile/Profile';
+import './Dashboard.css';
 
-export default function Dashboard() {
-  const [dayInfo, setDayInfo] = useState(getDayInfo())
+const Dashboard = () => {
+  const [selectedComponent, setSelectedComponent] = useState('Routine');
 
-  useEffect(() => {
-
-  }, [dayInfo])
-
-  const handleNextDay = () => {
-    setDayInfo((prevDayInfo) => {
-      const nextDayId = prevDayInfo.id % 7 + 1
-      const prevDayName = getDayInfoById(nextDayId).name
-      return { id: nextDayId, name: prevDayName}
-    })
-  }
-
-  const handlePrevDay = () => {
-    setDayInfo((prevDayInfo) => {
-      const prevDayId = (prevDayInfo.id + 5) % 7 + 1
-      const prevDayName = getDayInfoById(prevDayId).name
-      return { id: prevDayId, name: prevDayName}
-    })
-  }
-
-  const getDayInfoById = (id) => {
-    const daysOfWeek = [
-      { id: 1, name: 'Lunes' },
-      { id: 2, name: 'Martes' },
-      { id: 3, name: 'Miércoles' },
-      { id: 4, name: 'Jueves' },
-      { id: 5, name: 'Viernes' },
-      { id: 6, name: 'Sábado' },
-      { id: 7, name: 'Domingo' }
-    ];
-    return daysOfWeek.find(day => day.id === id);
-  }
+  const renderComponent = () => {
+    switch (selectedComponent) {
+      case 'Routine':
+        return <Routine />;
+      case 'Search':
+        return <Search />;
+      case 'Progress':
+        return <Progress />;
+      case 'Profile':
+        return <Profile />;
+      default:
+        return <Routine />;
+    }
+  };
 
   return (
     <div className="dashboardPage">
       <header className="header">
-        <span className="icon-button" onClick={handlePrevDay} >
-          <FontAwesomeIcon icon={faChevronLeft} className="fa-2x"/>
-        </span>
-        <h1>{dayInfo.name}</h1>
-        <span className="icon-button" onClick={handleNextDay}>
-          <FontAwesomeIcon icon={faChevronRight} className="fa-2x"/>
-        </span>
+        <Navbar onSelect={setSelectedComponent} />
       </header>
-      <main className="content">
-      </main>
+        {renderComponent()}
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;

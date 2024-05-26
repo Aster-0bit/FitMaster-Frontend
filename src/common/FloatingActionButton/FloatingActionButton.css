@@ -1,0 +1,21 @@
+/* FloatingActionButton.css */
+.fab {
+  position: absolute;
+  bottom: 20px;
+  right: 60px;
+  background-color: #21897E;
+  color: white;
+  border: 2px solid #20FFC9;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.fab:hover {
+  background-color: #1a6d60;
+}

@@ -1,0 +1,49 @@
+.navbar {
+
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nav-item .link {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+
+.nav-item .label {
+  margin-left: 8px;
+}
+
+.line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: #333;
+  transition: left 0.3s ease, width 0.3s ease;
+}
+
+.nav-item.selected .line {
+  width: 100%;
+}
+
+.nav-item.selected{
+  color: #20FFC9;
+
+}
+
+.link.selected {
+  color: #20FFC9;
+}
