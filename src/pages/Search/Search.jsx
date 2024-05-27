@@ -1,7 +1,7 @@
 export default function Searcg() {
   return(
-    <div>
-      <h1>Search</h1>
-    </div>
+    <main className="content">
+      <h1>Buscar</h1>
+    </main>
   )
 }

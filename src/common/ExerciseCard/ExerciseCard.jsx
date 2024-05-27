@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaEdit, FaTrash, FaChevronDown, FaChevronUp, FaHeart, FaRegHeart } from 'react-icons/fa';
 import './ExerciseCard.css';
 
-const ExerciseCard = ({ name, repetitions, sets, rest, intensity, duration, note, isFavorite, onEdit, onDelete, exerciseP_id, onToggleFavorite }) => {
+const ExerciseCard = ({ exerciseP_id, name, repetitions, sets, rest, intensity, duration, note, isFavorite, onEdit, onDelete, onToggleFavorite }) => {
   const [isNoteVisible, setIsNoteVisible] = useState(false);
   const [isLiked, setIsLiked] = useState(isFavorite === 1);
 
@@ -13,7 +13,6 @@ const ExerciseCard = ({ name, repetitions, sets, rest, intensity, duration, note
   const toggleNoteVisibility = () => {
     setIsNoteVisible(!isNoteVisible);
   };
-
 
   const toggleLike = () => {
     const newLikedState = !isLiked;
