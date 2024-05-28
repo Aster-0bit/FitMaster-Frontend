@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './AddExerciseModal.css';
-import { FaSearch, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaSearch, FaPlus, FaMinus, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../auth/AuthProvider';
 
 const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
@@ -133,11 +133,12 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
+        <button className="close-btn" onClick={onClose}><FaTimes /></button>
         <h2>Añadir Ejercicio</h2>
         {!selectedExercise ? (
           <>
             <div className="search-bar">
-              <FaSearch />
+              <FaSearch className='icon'/>
               <input type="text" placeholder="Buscar ejercicio..." onChange={handleSearchChange} />
             </div>
             <div className="filter-buttons">
