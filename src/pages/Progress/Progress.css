@@ -1,0 +1,22 @@
+
+.content .MuiTextField-root {
+    margin-bottom: 20px;
+  }
+  
+.content .MuiBox-root {
+margin-bottom: 20px;
+color: white;
+}
+
+.content .MuiButton-root {
+margin-right: 8px;
+color: white;
+}
+
+.chart-container {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 400px;
+
+}

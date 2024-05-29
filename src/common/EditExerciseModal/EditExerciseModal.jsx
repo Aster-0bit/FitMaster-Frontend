@@ -75,11 +75,25 @@ const EditExerciseModal = ({ isOpen, onClose, onSave, exerciseP_id }) => {
       });
       if (response.ok) {
         const updatedExercise = { ...updatedData, ExerciseP_id: exerciseP_id };
+        
+        
+        console.log({'repuesta': "si", ...updatedData, exerciseP_id: exerciseP_id })
+        
         onSave(updatedExercise);
         onClose();
       } else {
         console.error('Error al actualizar el ejercicio', response.statusText);
       }
+      const historyResponse = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/add/history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'	
+        },
+        body: JSON.stringify({...updatedData, exerciseP_id: exerciseP_id})
+        
+      })
+      console.log({'repuesta': "si", ...updatedData, exerciseP_id: exerciseP_id })
     } catch (error) {
       console.error('Error al actualizar el ejercicio', error);
     }

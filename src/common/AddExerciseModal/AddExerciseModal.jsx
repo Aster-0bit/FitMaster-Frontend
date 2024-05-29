@@ -101,16 +101,33 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
     const response = await fetch('https://fitmaster-backend-production.up.railway.app/exercises', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`, 
         'Content-Type': 'application/json'
       },
+      
       body: JSON.stringify({ exercise_id: selectedExercise.exercise_id, ...formData })
     });
 
     if (response.ok) {
       const newExercise = await response.json();
-      console.log('Nuevo ejercicio:', newExercise);
+      console.log('Nuevo ejercicio:', newExercise, 'Final');
+      console.log('contenido Formulario', {...formData, exercise_id: selectedExercise.exercise_id})
       onSave(newExercise);
+
+      const respuesta = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/add/history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ exercise_id: selectedExercise.exercise_id, ...formData })
+      })
+
+      if (respuesta.ok) {
+        console.log('Historial de ejercicio añadido');
+      }
+
 
       // Realizar peticiones adicionales para los días seleccionados usando el `id` devuelto
       for (const day of formData.days) {
