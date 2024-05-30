@@ -101,14 +101,15 @@ const ExerciseHistoryChart = () => {
 
   return (
     <main className="content">
-      <div className="search-bar">
-        <FaSearch />
+      <div className="search-progresso">
+        <FaSearch className='icon'/>
         <Autocomplete
           options={exerciseNames}
           value={exerciseName}
           onChange={(event, newValue) => setExerciseName(newValue)}
           renderInput={(params) => <TextField {...params} label="Buscar ejercicio" variant="outlined" />}
           fullWidth
+          className="search"
         />
       </div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>

@@ -1,9 +1,23 @@
-.search-progress {
+.search-progresso {
+  display: flex;
+  align-items: center;
   color: white;
-  background-color: white;
   width: 100%;
   border-radius: 5px;
-  padding: 10px;
+  gap: 10px;
+}
+
+.search-progresso .search{
+  background-color: #EEE5E9;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  border-radius: 5px;
+  height: 56px;
+}
+
+.search-progresso .icon{
+  color: white;
+  font-size: 24px;
 }
 
 .content .MuiTextField-root {
