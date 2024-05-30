@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
-import { TextField, Button, Box, Container } from '@mui/material';
+import { Autocomplete, TextField, Button, Box } from '@mui/material';
 import './Progress.css';  // Importa el archivo CSS aquí
 import { useAuth } from '../../auth/AuthProvider';
+import { FaSearch } from 'react-icons/fa';
 
 const ExerciseHistoryChart = () => {
   const { getAccessToken } = useAuth();
@@ -26,7 +27,9 @@ const ExerciseHistoryChart = () => {
   }, [getAccessToken]);
 
   useEffect(() => {
-    const filtered = data.filter(item => item.name.toLowerCase().includes(exerciseName.toLowerCase()));
+    const filtered = data.filter(item => 
+      exerciseName ? item.name.toLowerCase().includes(exerciseName.toLowerCase()) : true
+    );
 
     const now = new Date();
     const filteredByTimeRange = filtered.filter(item => {
@@ -93,16 +96,21 @@ const ExerciseHistoryChart = () => {
     }
   };
 
+  // Obtener una lista de nombres de ejercicios sin duplicados
+  const exerciseNames = Array.from(new Set(data.map(item => item.name)));
+
   return (
     <main className="content">
-      <TextField 
-        label="Buscar Ejercicio" 
-        variant="outlined" 
-        value={exerciseName}
-        onChange={e => setExerciseName(e.target.value)}
-        fullWidth 
-        margin="normal" 
-      />
+      <div className="search-bar">
+        <FaSearch />
+        <Autocomplete
+          options={exerciseNames}
+          value={exerciseName}
+          onChange={(event, newValue) => setExerciseName(newValue)}
+          renderInput={(params) => <TextField {...params} label="Buscar ejercicio" variant="outlined" />}
+          fullWidth
+        />
+      </div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         {['7D', '1M', '3M', '1A', 'MAX'].map(range => (
           <Button key={range} variant={timeRange === range ? 'contained' : 'outlined'} onClick={() => setTimeRange(range)}>

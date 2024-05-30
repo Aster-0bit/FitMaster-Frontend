@@ -1,3 +1,10 @@
+.search-progress {
+  color: white;
+  background-color: white;
+  width: 100%;
+  border-radius: 5px;
+  padding: 10px;
+}
 
 .content .MuiTextField-root {
     margin-bottom: 20px;
@@ -17,6 +24,6 @@ color: white;
 display: flex;
 justify-content: center;
 align-items: center;
-height: 400px;
+flex-direction: column;
 
 }

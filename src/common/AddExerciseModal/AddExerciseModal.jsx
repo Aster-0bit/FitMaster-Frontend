@@ -72,8 +72,15 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    const { name, value, type } = e.target;
+        if (type === 'number') {
+            // Convertir el valor a un número si el tipo de input es numérico
+            const numericValue = value === '' ? 0 : parseInt(value, 10);
+            setFormData(prevData => ({ ...prevData, [name]: numericValue }));
+        } else {
+            // Manejar inputs no numéricos
+            setFormData(prevData => ({ ...prevData, [name]: value }));
+        }
   };
 
   const handleIncrement = (name) => {
@@ -101,33 +108,16 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
     const response = await fetch('https://fitmaster-backend-production.up.railway.app/exercises', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`, 
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      
       body: JSON.stringify({ exercise_id: selectedExercise.exercise_id, ...formData })
     });
 
     if (response.ok) {
       const newExercise = await response.json();
-      console.log('Nuevo ejercicio:', newExercise, 'Final');
-      console.log('contenido Formulario', {...formData, exercise_id: selectedExercise.exercise_id})
+      console.log('Nuevo ejercicio:', newExercise);
       onSave(newExercise);
-
-      const respuesta = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/add/history`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-
-        body: JSON.stringify({ exercise_id: selectedExercise.exercise_id, ...formData })
-      })
-
-      if (respuesta.ok) {
-        console.log('Historial de ejercicio añadido');
-      }
-
 
       // Realizar peticiones adicionales para los días seleccionados usando el `id` devuelto
       for (const day of formData.days) {
@@ -177,7 +167,7 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
               <label>Repeticiones</label>
               <div className="input-group">
                 <button type="button" onClick={() => handleDecrement('reps')}><FaMinus /></button>
-                <input type="number" name="reps" value={formData.reps} onChange={handleChange} />
+                <input type="number" min="0" max="75" name="reps" value={formData.reps} onChange={handleChange} />
                 <button type="button" onClick={() => handleIncrement('reps')}><FaPlus /></button>
               </div>
             </div>
