@@ -56,7 +56,6 @@ const Navbar = ({ onSelect }) => {
           </li>
         ))}
       </ul>
-      <div className="line" style={lineStyle}></div>
     </nav>
   );
 };

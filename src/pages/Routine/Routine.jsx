@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import './Routine.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +11,9 @@ import EditExerciseModal from '../../common/EditExerciseModal/EditExerciseModal'
 import DeleteConfirmationModal from '../../common/DeleteConfirmationModal/DeleteConfirmationModal';
 import AddExerciseModal from '../../common/AddExerciseModal/AddExerciseModal';
 import { useAuth } from '../../auth/AuthProvider';
+import ToastManager from './../../common/ToastManager';
+
+
 
 const Routine = () => {
   const { getAccessToken } = useAuth();
@@ -25,26 +28,27 @@ const Routine = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [exerciseToEdit, setExerciseToEdit] = useState(null);
   const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] = useState(false);
+  const toast = useRef(null);
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const token = getAccessToken();
-        const response = await fetch(`https://fitmaster-backend-production.up.railway.app/user/routine/${dayInfo.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setExercises(data);
-        } else {
-          console.error('Error al obtener los datos de los ejercicios', response.statusText);
+  const fetchExercises = async () => {
+    try {
+      const token = getAccessToken();
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/user/routine/${dayInfo.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('Error al obtener los datos de los ejercicios', error);
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setExercises(data);
+      } else {
+        console.error('Error al obtener los datos de los ejercicios', response.statusText);
       }
-    };
+    } catch (error) {
+      console.error('Error al obtener los datos de los ejercicios', error);
+    }
+  };
+  useEffect(() => {
 
     fetchExercises();
   }, [dayInfo, getAccessToken]);
@@ -83,7 +87,6 @@ const Routine = () => {
     setIsEditModalOpen(true);
   };
 
-
   const handleDeleteDay = async (exerciseP_id) => {
     try {
       const token = getAccessToken();
@@ -95,14 +98,17 @@ const Routine = () => {
       });
       if (response.ok) {
         setExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Ejercicio eliminado correctamente', life: 3000 });
       } else {
         console.error('Error al eliminar el ejercicio', response.statusText);
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio', life: 3000 });
       }
     } catch (error) {
       console.error('Error al eliminar el ejercicio', error);
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio', life: 3000 });
     }
   };
-
+  
   const handleDeleteAll = async (exerciseP_id) => {
     try {
       const token = getAccessToken();
@@ -114,11 +120,14 @@ const Routine = () => {
       });
       if (response.ok) {
         setExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Ejercicio eliminado completamente', life: 3000 });
       } else {
         console.error('Error al eliminar el ejercicio completamente', response.statusText);
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio completamente', life: 3000 });
       }
     } catch (error) {
       console.error('Error al eliminar el ejercicio completamente', error);
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio completamente', life: 3000 });
     }
   };
 
@@ -193,21 +202,16 @@ const Routine = () => {
   };
 
   const handleSaveEdit = (updatedExercise) => {
-    setExercises((prevExercises) =>
-      prevExercises.map((exercise) =>
-        exercise.ExerciseP_id === updatedExercise.ExerciseP_id ? { ...exercise, ...updatedExercise } : exercise
-      )
-    );
-    setIsEditModalOpen(false);
-    setExerciseToEdit(null);
+    fetchExercises();
   };
 
   const handleSaveNewExercise = (newExercise) => {
-    setExercises((prevExercises) => [...prevExercises, newExercise]);
+    fetchExercises();
   };
 
   return (
     <main className="content">
+      <ToastManager ref={toast} />
       <div className="day-selector">
         <span className="icon-button" onClick={handlePrevDay}>
           <FontAwesomeIcon icon={faChevronLeft} className="fa-2x" />
@@ -264,6 +268,7 @@ const Routine = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSaveEdit}
         exerciseP_id={exerciseToEdit}
+        showToast={(severity, summary, detail) => toast.current.show({ severity, summary, detail, life: 3000 })}
       />
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
@@ -276,6 +281,7 @@ const Routine = () => {
         isOpen={isAddExerciseModalOpen}
         onClose={() => setIsAddExerciseModalOpen(false)}
         onSave={handleSaveNewExercise}
+        showToast={(severity, summary, detail) => toast.current.show({ severity, summary, detail, life: 3000 })}
       />
     </main>
   );

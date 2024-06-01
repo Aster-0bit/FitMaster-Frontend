@@ -33,3 +33,14 @@
   display: flex;
   justify-content: space-between;
 }
+
+.btn-delete{
+  margin-top: 20px;
+    padding: 10px;
+    width: 40%;
+    background-color: #21897E;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

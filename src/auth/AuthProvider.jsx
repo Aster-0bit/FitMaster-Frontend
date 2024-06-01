@@ -1,11 +1,13 @@
 import { useContext, createContext, useState, useEffect } from 'react'
 import { API_URL } from './constants'
+import { useNavigate } from 'react-router-dom'
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => '',
   saveUser: () => { },
   getRefreshToken: () => '',
   checkAuth: () => { },
+  logout: () => { },
 })
 
 export function AuthProvider({ children }) {
@@ -40,6 +42,12 @@ export function AuthProvider({ children }) {
     }
   }
 
+  function logout() {
+    setAccessToken('');
+    // setRefreshToken('');
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  }
   // async function getUserInfo()
 
   async function checkAuth() {
@@ -84,7 +92,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, getAccessToken, saveUser, getRefreshToken, checkAuth }}>
+    <AuthContext.Provider value={{ isAuthenticated, getAccessToken, saveUser, getRefreshToken, checkAuth, logout }}>
       {children}
     </AuthContext.Provider>
   )

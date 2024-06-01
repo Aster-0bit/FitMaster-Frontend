@@ -10,6 +10,10 @@ import { AuthProvider } from './auth/AuthProvider.jsx'
 import { Landing } from './pages/Landing.jsx'
 import ForgotPassword from './pages/ForgotPassword/ForgotPasword.jsx'
 import ResetPassword from './pages/ResetPassword/ResetPassword.jsx'
+import 'primereact/resources/themes/saga-blue/theme.css'; // Puedes cambiar el tema según tus preferencias
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+import 'react-time-picker/dist/TimePicker.css';
 
 const router = createBrowserRouter([
   {

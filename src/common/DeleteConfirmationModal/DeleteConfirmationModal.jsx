@@ -19,8 +19,9 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, onCheckboxChange,
           <label htmlFor="deleteAll">Eliminar de todos los días</label>
         </div>
         <div className="modal-actions">
-          <button onClick={onConfirm}>Confirmar</button>
-          <button onClick={onClose}>Cancelar</button>
+          <button className="btn-delete" type="button" onClick={onConfirm}>Confirmar</button>
+          <button className="btn-delete" type="button" onClick={onClose}>Cancelar</button>
+
         </div>
       </div>
     </div>

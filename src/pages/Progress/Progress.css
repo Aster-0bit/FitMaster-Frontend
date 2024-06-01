@@ -41,3 +41,22 @@ align-items: center;
 flex-direction: column;
 
 }
+
+
+@media (max-width: 480px) {
+  .search-progresso {
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .search-progresso .icon{
+    font-size: 30px;
+  }
+
+
+
+  .css-hzmhdb{
+    width: 70%;
+    gap: 5px;
+  }
+}

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
-  const { getAccessToken } = useAuth();
+  const { getAccessToken, logout } = useAuth();
   const [user, setUser] = useState({ name: '', email: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
-  const token = getAccessToken() // Reemplaza esto con tu token actual
+  const token = getAccessToken();
+  const navigate = useNavigate(); // Hook de navegación
 
   useEffect(() => {
     fetch('https://fitmaster-backend-production.up.railway.app/user', {
@@ -55,6 +57,11 @@ const UserProfile = () => {
     setNewName(e.target.value);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+  };
+
   return (
     <main className='content'>
       <h1>User Profile</h1>
@@ -72,6 +79,7 @@ const UserProfile = () => {
       ) : (
         <button onClick={handleEditClick}>Edit</button>
       )}
+      <button onClick={handleLogout}>Logout</button>
     </main>
   );
 };

@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AddExerciseModal.css';
 import { FaSearch, FaPlus, FaMinus, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../auth/AuthProvider';
+import { NumericFormat } from 'react-number-format';
+import { Dropdown } from 'primereact/dropdown';
 
-const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
+const AddExerciseModal = ({ isOpen, onClose, onSave, showToast }) => {
   const { getAccessToken } = useAuth();
   const [exerciseId, setExerciseId] = useState(null);
   const [exercises, setExercises] = useState([]);
@@ -17,8 +19,22 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
     duration: 0,
     intensity: '',
     note: '',
-    days: [] // Estado para los días seleccionados
+    days: []
   });
+
+  const resetForm = () => {
+    setFormData({
+      reps: 0,
+      sets: 0,
+      weight: 0,
+      rest: 0,
+      duration: 0,
+      intensity: '',
+      note: '',
+      days: []
+    });
+    setSelectedExercise(null);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -33,7 +49,7 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
           if (response.ok) {
             const data = await response.json();
             setExercises(data);
-            setFilteredExercises(data); // Inicialmente muestra todos los ejercicios
+            setFilteredExercises(data);
           } else {
             console.error('Error al obtener los ejercicios', response.statusText);
           }
@@ -45,6 +61,13 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
       fetchExercises();
     }
   }, [isOpen, getAccessToken]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+  
 
   const handleSearchChange = (e) => {
     const searchValue = e.target.value.toLowerCase();
@@ -73,22 +96,19 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-        if (type === 'number') {
-            // Convertir el valor a un número si el tipo de input es numérico
-            const numericValue = value === '' ? 0 : parseInt(value, 10);
-            setFormData(prevData => ({ ...prevData, [name]: numericValue }));
-        } else {
-            // Manejar inputs no numéricos
-            setFormData(prevData => ({ ...prevData, [name]: value }));
-        }
+    if (type === 'number' || type === 'text') {
+      setFormData(prevData => ({ ...prevData, [name]: parseFloat(value) }));
+    } else {
+      setFormData(prevData => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleIncrement = (name) => {
-    setFormData(prevData => ({ ...prevData, [name]: prevData[name] + 1 }));
+    setFormData(prevData => ({ ...prevData, [name]: (parseFloat(prevData[name]) || 0) + 1 }));
   };
 
   const handleDecrement = (name) => {
-    setFormData(prevData => ({ ...prevData, [name]: Math.max(prevData[name] - 1, 0) }));
+    setFormData(prevData => ({ ...prevData, [name]: Math.max((parseFloat(prevData[name]) || 0) - 1, 0) }));
   };
 
   const handleDayChange = (day) => {
@@ -100,9 +120,29 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
     });
   };
 
+  const validateInputs = () => {
+    const positiveCounts = [
+      formData.reps,
+      formData.sets,
+      formData.weight,
+      formData.rest,
+      formData.duration
+    ].filter(value => value > 0).length;
+  
+    return positiveCounts >= 2;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedExercise) return;
+    if (!selectedExercise || formData.days.length === 0) {
+      showToast('error', 'Error', 'Debes seleccionar un ejercicio y al menos un día.');
+      return;
+    }
+
+    if (!validateInputs()) {
+      showToast('error', 'Error', 'Al menos 2 valores numéricos deben ser positivos.');
+      return;
+    }
 
     const token = getAccessToken();
     const response = await fetch('https://fitmaster-backend-production.up.railway.app/exercises', {
@@ -119,7 +159,6 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
       console.log('Nuevo ejercicio:', newExercise);
       onSave(newExercise);
 
-      // Realizar peticiones adicionales para los días seleccionados usando el `id` devuelto
       for (const day of formData.days) {
         await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/id/${newExercise.id}/day/${day}`, {
           method: 'POST',
@@ -129,13 +168,21 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
         });
       }
 
+      showToast('success', 'Éxito', 'Ejercicio añadido correctamente');
       onClose();
     } else {
       console.error('Error al añadir el ejercicio', response.statusText);
+      showToast('error', 'Error', 'Error al añadir el ejercicio');
     }
   };
 
   if (!isOpen) return null;
+
+  const intensityOptions = [
+    { label: 'Alta', value: 'Alta' },
+    { label: 'Media', value: 'Media' },
+    { label: 'Baja', value: 'Baja' },
+  ];
 
   return (
     <div className="modal-overlay">
@@ -180,37 +227,57 @@ const AddExerciseModal = ({ isOpen, onClose, onSave }) => {
               </div>
             </div>
             <div className="form-group">
-              <label>Peso</label>
+              <label>Peso (kg)</label>
               <div className="input-group">
                 <button type="button" onClick={() => handleDecrement('weight')}><FaMinus /></button>
-                <input type="number" name="weight" value={formData.weight} onChange={handleChange} />
+                <NumericFormat
+                  value={formData.weight}
+                  onValueChange={({ floatValue }) => setFormData(prevData => ({ ...prevData, weight: floatValue }))}
+                  thousandSeparator={true}
+                  suffix={' kg'}
+                  customInput={props => <input {...props} name="weight" />}
+                />
                 <button type="button" onClick={() => handleIncrement('weight')}><FaPlus /></button>
               </div>
             </div>
             <div className="form-group">
-              <label>Descanso</label>
+              <label>Descanso (minutos)</label>
               <div className="input-group">
                 <button type="button" onClick={() => handleDecrement('rest')}><FaMinus /></button>
-                <input type="number" name="rest" value={formData.rest} onChange={handleChange} />
+                <NumericFormat
+                  value={formData.rest}
+                  onValueChange={({ floatValue }) => setFormData(prevData => ({ ...prevData, rest: floatValue }))}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  suffix={' m'}
+                  customInput={props => <input {...props} name="rest" />}
+                />
                 <button type="button" onClick={() => handleIncrement('rest')}><FaPlus /></button>
               </div>
             </div>
             <div className="form-group">
-              <label>Duración</label>
+              <label>Duración (minutos)</label>
               <div className="input-group">
                 <button type="button" onClick={() => handleDecrement('duration')}><FaMinus /></button>
-                <input type="number" name="duration" value={formData.duration} onChange={handleChange} />
+                <NumericFormat
+                  value={formData.duration}
+                  onValueChange={({ floatValue }) => setFormData(prevData => ({ ...prevData, duration: floatValue }))}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  suffix={' m'}
+                  customInput={props => <input {...props} name="duration" />}
+                />
                 <button type="button" onClick={() => handleIncrement('duration')}><FaPlus /></button>
               </div>
             </div>
             <div className="form-group">
               <label>Intensidad</label>
-              <select name="intensity" value={formData.intensity} onChange={handleChange}>
-                <option value="">Seleccionar</option>
-                <option value="Alta">Alta</option>
-                <option value="Media">Media</option>
-                <option value="Baja">Baja</option>
-              </select>
+              <Dropdown
+                value={formData.intensity}
+                options={intensityOptions}
+                onChange={(e) => setFormData(prevData => ({ ...prevData, intensity: e.value }))}
+                placeholder="Seleccionar"
+              />
             </div>
             <div className="form-group">
               <label>Nota</label>

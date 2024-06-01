@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../auth/AuthProvider';
 import './Search.css';
 import { FaSearch } from 'react-icons/fa';
+import { Dropdown } from 'primereact/dropdown';
+import { Toast } from 'primereact/toast';
 
 const muscleGroups = [
   { id: 1, name: 'Pectorales' },
@@ -14,7 +16,19 @@ const muscleGroups = [
   { id: 8, name: 'Glúteos' },
   { id: 9, name: 'Abdominales' },
   { id: 10, name: 'Pantorrillas' },
-  { id: 11, name: 'Antebrazos' },
+  { id: 11, name: 'Antebrazos' }
+];
+
+const exerciseTypes = [
+  { value: 'gimnasio', name: 'Gimnasio' },
+  { value: 'calistenia', name: 'Calistenia' },
+  { value: 'cardio', name: 'Cardio' }
+];
+
+const intensities = [
+  { value: 'Media', name: 'Media' },
+  { value: 'Alta', name: 'Alta' },
+  { value: 'Baja', name: 'Baja' }
 ];
 
 const Search = () => {
@@ -25,6 +39,9 @@ const Search = () => {
   const [activeTab, setActiveTab] = useState('recientes');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMuscleGroup, setSelectedMuscleGroup] = useState('');
+  const [selectedExerciseType, setSelectedExerciseType] = useState('');
+  const [selectedIntensity, setSelectedIntensity] = useState('');
+  const toast = useRef(null);
 
   useEffect(() => {
     const fetchRecentExercises = async () => {
@@ -39,10 +56,10 @@ const Search = () => {
           const data = await response.json();
           setRecentExercises(data);
         } else {
-          console.error('Error al obtener los ejercicios recientes', response.statusText);
+          toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al obtener los ejercicios recientes', life: 3000 });
         }
       } catch (error) {
-        console.error('Error al obtener los ejercicios recientes', error);
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al obtener los ejercicios recientes', life: 3000 });
       }
     };
 
@@ -58,10 +75,10 @@ const Search = () => {
           const data = await response.json();
           setFavoriteExercises(data);
         } else {
-          console.error('Error al obtener los ejercicios favoritos', response.statusText);
+          toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al obtener los ejercicios favoritos', life: 3000 });
         }
       } catch (error) {
-        console.error('Error al obtener los ejercicios favoritos', error);
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al obtener los ejercicios favoritos', life: 3000 });
       }
     };
 
@@ -69,31 +86,64 @@ const Search = () => {
     fetchFavoriteExercises();
   }, [getAccessToken]);
 
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleMuscleGroupChange = async (e) => {
-    const muscleGroupId = e.target.value;
-    setSelectedMuscleGroup(muscleGroupId);
-
-    if (muscleGroupId) {
-      try {
-        const token = getAccessToken();
-        const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/muscle-group/${muscleGroupId}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setFilteredExercises(data);
-        } else {
-          console.error('Error al obtener los ejercicios por grupo muscular', response.statusText);
+  const fetchFilteredExercises = async (endpoint, filterType) => {
+    try {
+      const token = getAccessToken();
+      const response = await fetch(endpoint, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('Error al obtener los ejercicios por grupo muscular', error);
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if(data.length === 0) {
+          toast.current.show({ severity: 'info', summary: 'Info', detail: `No hay ejercicios por ${filterType}`, life: 3000 });
+        }
+        setFilteredExercises(data);
+      } else {
+        toast.current.show({ severity: 'error', summary: 'Error', detail: `No hay ejercicios para ese grupo muscular.`, life: 3000 });
       }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: `Error al obtener los ejercicios por ${filterType}`, life: 3000 });
+    }
+  };
+
+  const handleMuscleGroupChange = (e) => {
+    setSelectedMuscleGroup(e.value);
+    setSelectedExerciseType('');
+    setSelectedIntensity('');
+    if (e.value) {
+      const endpoint = `https://fitmaster-backend-production.up.railway.app/exercises/muscle-group/${e.value}`;
+      fetchFilteredExercises(endpoint, 'grupo muscular');
+    } else {
+      setFilteredExercises([]);
+    }
+  };
+
+  const handleExerciseTypeChange = (e) => {
+    setSelectedExerciseType(e.value);
+    setSelectedMuscleGroup('');
+    setSelectedIntensity('');
+    if (e.value) {
+      const endpoint = `https://fitmaster-backend-production.up.railway.app/exercises/role/${e.value}`;
+      fetchFilteredExercises(endpoint, 'tipo de ejercicio');
+    } else {
+      setFilteredExercises([]);
+    }
+  };
+
+  const handleIntensityChange = (e) => {
+    setSelectedIntensity(e.value);
+    setSelectedMuscleGroup('');
+    setSelectedExerciseType('');
+    if (e.value) {
+      const endpoint = `https://fitmaster-backend-production.up.railway.app/exercises/intensity/${e.value}`;
+      fetchFilteredExercises(endpoint, 'intensidad');
     } else {
       setFilteredExercises([]);
     }
@@ -109,13 +159,15 @@ const Search = () => {
 
   return (
     <main className="content">
-      <div className="search-bar">
+      <Toast ref={toast} />
+      <div className="search-bar" id='searchh'>
         <FaSearch />
         <input
           type="text"
           placeholder="Buscar ejercicio"
           value={searchTerm}
           onChange={handleSearchChange}
+          id='inputt'
         />
       </div>
       <div className="tabs">
@@ -168,12 +220,20 @@ const Search = () => {
       {activeTab === 'filtros' && (
         <>
           <div className="filter-bar">
-            <select onChange={handleMuscleGroupChange} value={selectedMuscleGroup}>
-              <option value="">Seleccionar grupo muscular</option>
-              {muscleGroups.map(group => (
-                <option key={group.id} value={group.id}>{group.name}</option>
-              ))}
-            </select>
+            <Dropdown
+              value={selectedMuscleGroup}
+              options={muscleGroups.map(group => ({ label: group.name, value: group.id }))}
+              onChange={handleMuscleGroupChange}
+              placeholder="Seleccionar grupo muscular"
+              className="md:w-20rem w-full"
+            />
+            <Dropdown
+              value={selectedExerciseType}
+              options={exerciseTypes.map(type => ({ label: type.name, value: type.value }))}
+              onChange={handleExerciseTypeChange}
+              placeholder="Seleccionar tipo de ejercicio"
+              className="md:w-20rem w-full"
+            />
           </div>
           <div className="exercises">
             {filteredExercises.map(exercise => (
@@ -188,7 +248,6 @@ const Search = () => {
                     <li><span>Descanso:</span> {exercise.rest}</li>
                     <li><span>Intensidad:</span> {exercise.intensity}</li>
                     <li><span>Duración:</span> {exercise.duration}</li>
-                    <li><span>Nota:</span> {exercise.note}</li>
                   </ul>
                 </div>
               </div>

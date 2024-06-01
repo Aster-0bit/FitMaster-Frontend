@@ -1,6 +1,6 @@
 .card {
-  background-color: #FFF;
-  border-radius: 8px;
+  background-color: hwb(340 94% 5%);
+  border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;
@@ -80,4 +80,82 @@
   margin-top: 10px;
   font-size: 16px;
   color: #333;
+}
+
+@media (max-width: 480px) {
+  .card {
+    width: 99%;
+    display: flex;
+    position: relative;
+    border-bottom-right-radius: 5px;
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .card-header {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  .card-header .exercise-name{
+    font-size: 15px;
+  }
+
+  .delete-btn{
+    font-size: 20px;
+  }
+
+  .edit-btn{
+    font-size: 20px;
+  }
+
+  .like-btn{
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    font-size: 20px;
+    color: black;
+  }
+
+  .card-body {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2%;
+  }
+
+  .exercise-details li{
+    margin: 0;
+    font-size: 14px;
+  }
+  .note-section{
+  }
+
+  .note-section .note-toggle{
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .exercises .card:last-of-type{
+    margin-bottom: 22%;
+  }
+
+  p.note-content{
+    color: black;
+    font-size: 14px;
+    border: 1px solid #454545;
+    min-height: 40px;
+    padding: 5px;
+    background-color: white;
+    border-radius: 4px;
+  }
 }

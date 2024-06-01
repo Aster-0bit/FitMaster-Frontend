@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { useAuth } from '../auth/AuthProvider'
-import { Navigate, Link } from 'react-router-dom'
-import './Signup.css'
-import { API_URL } from '../auth/constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { useState, useRef } from 'react';
+import { useAuth } from '../auth/AuthProvider';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import './Signup.css';
+import { API_URL } from '../auth/constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { Toast } from 'primereact/toast';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -15,6 +16,8 @@ export default function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const auth = useAuth();
+  const navigate = useNavigate();
+  const toast = useRef(null);
 
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{4,}$/;
 
@@ -43,13 +46,19 @@ export default function Signup() {
       if (response.ok) {
         console.log('Usuario registrado');
         setErrorMessage(''); // Clear error message on success
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Registro exitoso', life: 3000 });
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       } else {
         console.error('Error en el registro');
         setErrorMessage('Error en el registro');
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error en el registro intentelo mas tarde', life: 3000 });
       }
     } catch (error) {
       console.error('Error en el registro', error);
       setErrorMessage('Error en el registro');
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error en el registro', life: 3000 });
     }
   }
 
@@ -59,6 +68,7 @@ export default function Signup() {
 
   return (
     <div className="signup-page">
+      <Toast ref={toast} />
       <div className="form-wrapper">
         <div className="form-container">
           <Link to="/" className="back-link"><FontAwesomeIcon icon={faChevronLeft} /> Atrás</Link>

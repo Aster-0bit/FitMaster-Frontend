@@ -21,13 +21,12 @@
 
 .dashboardPage main.content div.exercises {
   position: relative;
-  border: 2px solid white;
   overflow-y: auto;
   height: 72vh;
   width: 95%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  place-items: center;
+  place-items: start center;
   gap: 20px;
   padding: 10px;
 }
@@ -51,4 +50,15 @@
 .dashboardPage main.content div.exercises {
   scrollbar-width: thin; /* Ancho de la scrollbar: auto, thin, none */
   scrollbar-color: #21897E #000000; /* Color de la "thumb" y de la pista */
+}
+
+@media (max-width: 480px) {
+  .dashboardPage main.content div.exercises{
+    width: 100%;
+    height: 75vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  }
 }

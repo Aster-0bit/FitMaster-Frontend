@@ -14,7 +14,6 @@
   gap: 10px;
   width: 100%;
   max-width: 600px;
-  margin-bottom: 20px;
   padding: 10px;
   background-color: #282828;
   border-radius: 8px;
@@ -68,6 +67,22 @@
   color: #20FFC9;
 }
 
+@media (max-width: 480px) {
+
+  #searchh{    
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 40px;
+    padding: 6px;
+    width: 90%;
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
 
 
 

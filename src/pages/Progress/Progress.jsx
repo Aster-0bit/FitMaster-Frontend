@@ -112,17 +112,23 @@ const ExerciseHistoryChart = () => {
           className="search"
         />
       </div>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        {['7D', '1M', '3M', '1A', 'MAX'].map(range => (
-          <Button key={range} variant={timeRange === range ? 'contained' : 'outlined'} onClick={() => setTimeRange(range)}>
-            {range}
-          </Button>
-        ))}
-      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-evenly', mb: 1, flexWrap: 'wrap' }}>
+  {['7D', '1M', '3M'].map(range => (
+    <Button id='gButton' key={range} variant={timeRange === range ? 'contained' : 'outlined'} size="small" onClick={() => setTimeRange(range)}>
+      {range}
+    </Button>
+  ))}
+  <br/>
+  {['1A', 'MAX'].map(range => (
+    <Button id='gButton' key={range} variant={timeRange === range ? 'contained' : 'outlined'} size="small" onClick={() => setTimeRange(range)}>
+      {range}
+    </Button>
+  ))}
+</Box>
       <div className="exercises">
         <div className="chart-container">
           <h3>Peso</h3>
-          <Chart type="line" data={createChartData('weight', 'Peso')} options={chartOptions} />
+          <Chart className='chart1' type="line" data={createChartData('weight', 'Peso')} options={chartOptions} />
         </div>
         <div className="chart-container">
           <h3>Repeticiones</h3>

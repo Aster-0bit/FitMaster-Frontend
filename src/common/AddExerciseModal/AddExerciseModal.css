@@ -87,6 +87,7 @@ div.modal .search-bar {
 .form-group {
   margin-bottom: 20px;
   display: flex;
+  align-items: center;
 }
 
 .form-group label {
@@ -147,4 +148,20 @@ div.modal .search-bar {
 .day-circle.selected {
   background: #007bff;
   color: #fff;
+}
+
+.search-bar input::placeholder {
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .modal-overlay .modal {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .days-selector{
+    flex-wrap: wrap;
+  }
 }
