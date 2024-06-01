@@ -2,25 +2,21 @@
 .landing-container {
   width: 100%;
   height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden; /* Oculta el scroll vertical */
   background-color: black;
 }
 
 /* Estilo para el banner */
 .banner {
   display: flex;
-  background: url('./../assets/banner.png') no-repeat center center;
+  background: url('./../assets/banner.png') no-repeat right center;
   background-size: cover;
-  /* Ajusta el tamaño de la imagen de fondo */
   padding: 60px 20px;
   position: relative;
   color: white;
-  height: 120vh;
-  /* Usa una altura basada en el viewport */
+  height: 100vh; /* Usa el 100% de la altura del viewport */
   min-height: 400px;
-  /* Asegura que el banner tenga una altura mínima */
   max-height: 800px;
-  /* Asigna una altura máxima */
   font-weight: bold;
 }
 
@@ -40,7 +36,6 @@
 
 .logo {
   width: 100px;
-  /* Ajusta el tamaño según necesites */
   margin-bottom: 20px;
 }
 
@@ -54,7 +49,7 @@
   border-radius: 5px;
   color: white;
   background-color: black;
-  font-size: 2.2rem;
+  font-size: 1.5rem; /* Corrige la unidad a rem */
   margin-bottom: 30px;
   padding: 2rem;
 }
@@ -130,8 +125,6 @@
   box-shadow: 7px 5px 56px -10px #C3D900;
 }
 
-
-
 .signup-btn {
   padding-left: 33px;
   padding-right: 33px;
@@ -159,7 +152,6 @@
 }
 
 @media (max-width: 420px) {
-
   .buttons {
     display: flex;
     justify-content: center;

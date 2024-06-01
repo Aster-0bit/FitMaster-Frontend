@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../auth/AuthProvider';
 import './Search.css';
 import { FaSearch } from 'react-icons/fa';
@@ -86,7 +86,6 @@ const Search = () => {
     fetchFavoriteExercises();
   }, [getAccessToken]);
 
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -101,7 +100,7 @@ const Search = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        if(data.length === 0) {
+        if (data.length === 0) {
           toast.current.show({ severity: 'info', summary: 'Info', detail: `No hay ejercicios por ${filterType}`, life: 3000 });
         }
         setFilteredExercises(data);
@@ -149,12 +148,31 @@ const Search = () => {
     }
   };
 
+
   const filteredRecentExercises = recentExercises.filter(exercise =>
     exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredFavoriteExercises = favoriteExercises.filter(exercise =>
     exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const renderExerciseCard = (exercise) => (
+    <div key={exercise.exerciseP_id} className="card">
+      <div className="card-header">
+        <h2 className="exercise-name">{exercise.name}</h2>
+      </div>
+      <div className="card-body">
+        <ul className="exercise-details">
+          <li><span>Repeticiones:</span> {exercise.reps}</li>
+          <li><span>Series:</span> {exercise.sets}</li>
+          <li><span>Descanso:</span> {exercise.rest}</li>
+          <li><span>Intensidad:</span> {exercise.intensity}</li>
+          <li><span>Duración:</span> {exercise.duration}</li>
+          <li><span>Nota:</span> {exercise.note}</li>
+        </ul>
+      </div>
+    </div>
   );
 
   return (
@@ -177,44 +195,12 @@ const Search = () => {
       </div>
       {activeTab === 'recientes' && (
         <div className="exercises">
-          {filteredRecentExercises.map(exercise => (
-            <div key={exercise.exerciseP_id} className="card">
-              <div className="card-header">
-                <h2 className="exercise-name">{exercise.name}</h2>
-              </div>
-              <div className="card-body">
-                <ul className="exercise-details">
-                  <li><span>Repeticiones:</span> {exercise.reps}</li>
-                  <li><span>Series:</span> {exercise.sets}</li>
-                  <li><span>Descanso:</span> {exercise.rest}</li>
-                  <li><span>Intensidad:</span> {exercise.intensity}</li>
-                  <li><span>Duración:</span> {exercise.duration}</li>
-                  <li><span>Nota:</span> {exercise.note}</li>
-                </ul>
-              </div>
-            </div>
-          ))}
+          {filteredRecentExercises.map(renderExerciseCard)}
         </div>
       )}
       {activeTab === 'favoritos' && (
         <div className="exercises">
-          {filteredFavoriteExercises.map(exercise => (
-            <div key={exercise.exerciseP_id} className="card">
-              <div className="card-header">
-                <h2 className="exercise-name">{exercise.name}</h2>
-              </div>
-              <div className="card-body">
-                <ul className="exercise-details">
-                  <li><span>Repeticiones:</span> {exercise.reps}</li>
-                  <li><span>Series:</span> {exercise.sets}</li>
-                  <li><span>Descanso:</span> {exercise.rest}</li>
-                  <li><span>Intensidad:</span> {exercise.intensity}</li>
-                  <li><span>Duración:</span> {exercise.duration}</li>
-                  <li><span>Nota:</span> {exercise.note}</li>
-                </ul>
-              </div>
-            </div>
-          ))}
+          {filteredFavoriteExercises.map(renderExerciseCard)}
         </div>
       )}
       {activeTab === 'filtros' && (
@@ -236,22 +222,7 @@ const Search = () => {
             />
           </div>
           <div className="exercises">
-            {filteredExercises.map(exercise => (
-              <div key={exercise.exerciseP_id} className="card">
-                <div className="card-header">
-                  <h2 className="exercise-name">{exercise.name}</h2>
-                </div>
-                <div className="card-body">
-                  <ul className="exercise-details">
-                    <li><span>Repeticiones:</span> {exercise.reps}</li>
-                    <li><span>Series:</span> {exercise.sets}</li>
-                    <li><span>Descanso:</span> {exercise.rest}</li>
-                    <li><span>Intensidad:</span> {exercise.intensity}</li>
-                    <li><span>Duración:</span> {exercise.duration}</li>
-                  </ul>
-                </div>
-              </div>
-            ))}
+            {filteredExercises.map(renderExerciseCard)}
           </div>
         </>
       )}

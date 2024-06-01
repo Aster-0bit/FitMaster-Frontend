@@ -52,6 +52,20 @@
   scrollbar-color: #21897E #000000; /* Color de la "thumb" y de la pista */
 }
 
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+p.no-exercises{
+  position: absolute;
+  top: 44%;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 @media (max-width: 480px) {
   .dashboardPage main.content div.exercises{
     width: 100%;
@@ -59,6 +73,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    p.no-exercises{
+      font-size: 1.1rem;
+    }
   }
 }

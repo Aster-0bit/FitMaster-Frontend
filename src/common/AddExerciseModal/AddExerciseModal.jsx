@@ -135,7 +135,7 @@ const AddExerciseModal = ({ isOpen, onClose, onSave, showToast }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedExercise || formData.days.length === 0) {
-      showToast('error', 'Error', 'Debes seleccionar un ejercicio y al menos un día.');
+      showToast('error', 'Error', 'Debes seleccionar al menos un día.');
       return;
     }
 
@@ -221,8 +221,8 @@ const AddExerciseModal = ({ isOpen, onClose, onSave, showToast }) => {
             <div className="form-group">
               <label>Series</label>
               <div className="input-group">
-                <button type="button" onClick={() => handleDecrement('sets')}><FaMinus /></button>
-                <input type="number" name="sets" value={formData.sets} onChange={handleChange} />
+                <button type="button"  onClick={() => handleDecrement('sets')}><FaMinus /></button>
+                <input type="number" max="75" name="sets" value={formData.sets} onChange={handleChange} />
                 <button type="button" onClick={() => handleIncrement('sets')}><FaPlus /></button>
               </div>
             </div>

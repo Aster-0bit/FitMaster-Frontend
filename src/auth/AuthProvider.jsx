@@ -1,6 +1,7 @@
 import { useContext, createContext, useState, useEffect } from 'react'
 import { API_URL } from './constants'
-import { useNavigate } from 'react-router-dom'
+import { ProgressSpinner } from 'primereact/progressspinner'
+
 const AuthContext = createContext({
   isAuthenticated: false,
   getAccessToken: () => '',
@@ -13,7 +14,7 @@ const AuthContext = createContext({
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [accessToken, setAccessToken] = useState('')
-  // const [refreshToken, setRefreshToken] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     checkAuth();
@@ -31,7 +32,6 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         const data = await response.json()
-
         return data.accessToken
       } else {
         throw new Error('Error al solicitar un nuevo token')
@@ -44,29 +44,20 @@ export function AuthProvider({ children }) {
 
   function logout() {
     setAccessToken('');
-    // setRefreshToken('');
     localStorage.removeItem('token');
     setIsAuthenticated(false);
   }
-  // async function getUserInfo()
 
   async function checkAuth() {
-    if (accessToken) {
-      setIsAuthenticated(true)
-      setAccessToken(accessToken)
-
-    } else {
-      const token = getRefreshToken()
-      if (token) {
-        const newAccessToken = await requestNewAccessToken(token)
-        if (newAccessToken) {
-          saveUser({ accessToken: newAccessToken, refreshToken: token })
-        }
+    const token = getRefreshToken();
+    if (token) {
+      const newAccessToken = await requestNewAccessToken(token);
+      if (newAccessToken) {
+        saveUser({ accessToken: newAccessToken, refreshToken: token });
       }
     }
+    setIsLoading(false);
   }
-
-
 
   function getAccessToken() {
     return accessToken
@@ -78,17 +69,17 @@ export function AuthProvider({ children }) {
       const parsedToken = JSON.parse(token);
       return parsedToken;
     }
-
     return null;
   }
 
   function saveUser(userData) {
-    
     setAccessToken(userData.accessToken)
-    // setRefreshToken(userData.refreshToken)
-
     localStorage.setItem('token', JSON.stringify(userData.refreshToken))
     setIsAuthenticated(true)
+  }
+
+  if (isLoading) {
+    return <div className="spinner-container"><ProgressSpinner /></div>;
   }
 
   return (

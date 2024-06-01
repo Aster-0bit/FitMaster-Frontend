@@ -58,6 +58,10 @@
 }
 
 
+.fav{
+  color: #020202;
+  font-weight: bold;
+}
 
 .expand-btn {
   background: none;
@@ -67,6 +71,11 @@
   color: #20FFC9;
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 @media (max-width: 480px) {
 
   #searchh{    
@@ -77,11 +86,6 @@
     width: 90%;
   }
 
-  .filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
 }
 
 

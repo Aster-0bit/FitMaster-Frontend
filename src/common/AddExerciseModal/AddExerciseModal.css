@@ -23,6 +23,11 @@
   position: relative;
 }
 
+.modal h2{
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .close-btn {
   position: absolute;
   top: 10px;
@@ -155,6 +160,10 @@ div.modal .search-bar {
   opacity: 0.9;
 }
 
+textarea{ 
+  border: 1px solid black;
+    border-radius: 5px;
+}
 @media (max-width: 480px) {
   .modal-overlay .modal {
     display: flex;
