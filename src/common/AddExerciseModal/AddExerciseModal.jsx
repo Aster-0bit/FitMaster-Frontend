@@ -145,28 +145,29 @@ const AddExerciseModal = ({ isOpen, onClose, onSave, showToast }) => {
     }
 
     const token = getAccessToken();
-    const response = await fetch('https://fitmaster-backend-production.up.railway.app/exercises', {
+    const response = await fetch('https://fitmaster-backend-production.up.railway.app/exercises/exercises-with-days', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ exercise_id: selectedExercise.exercise_id, ...formData })
+      body: JSON.stringify({
+        exercise_id: selectedExercise.exercise_id,
+        reps: formData.reps,
+        sets: formData.sets,
+        weight: formData.weight,
+        rest: formData.rest,
+        duration: formData.duration,
+        intensity: formData.intensity,
+        note: formData.note,
+        days: formData.days
+      })
     });
 
     if (response.ok) {
       const newExercise = await response.json();
       console.log('Nuevo ejercicio:', newExercise);
       onSave(newExercise);
-
-      for (const day of formData.days) {
-        await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/id/${newExercise.id}/day/${day}`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      }
 
       showToast('success', 'Éxito', 'Ejercicio añadido correctamente');
       onClose();

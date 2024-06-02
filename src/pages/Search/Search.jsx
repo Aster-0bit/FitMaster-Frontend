@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../auth/AuthProvider';
 import './Search.css';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
+import EditExerciseModal from '../../common/EditExerciseModal/EditExerciseModal';
+import DeleteConfirmationModal from '../../common/DeleteConfirmationModal/DeleteConfirmationModal';
 
 const muscleGroups = [
   { id: 1, name: 'Pectorales' },
@@ -42,6 +44,10 @@ const Search = () => {
   const [selectedExerciseType, setSelectedExerciseType] = useState('');
   const [selectedIntensity, setSelectedIntensity] = useState('');
   const toast = useRef(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [exerciseToEdit, setExerciseToEdit] = useState(null);
+  const [exerciseToDelete, setExerciseToDelete] = useState(null);
 
   useEffect(() => {
     const fetchRecentExercises = async () => {
@@ -105,7 +111,13 @@ const Search = () => {
         }
         setFilteredExercises(data);
       } else {
-        toast.current.show({ severity: 'error', summary: 'Error', detail: `No hay ejercicios para ese grupo muscular.`, life: 3000 });
+        const data = await response.json();
+        const message = data.message;
+        if(message !== undefined){
+          toast.current.show({ severity: 'error', summary: 'Error', detail: `No hay ejercicios para esa categoría de ejercicio.`, life: 3000 });
+        }else{
+          toast.current.show({ severity: 'error', summary: 'Error', detail: `No hay ejercicios para ese grupsso muscular.`, life: 3000 });
+        }
       }
     } catch (error) {
       toast.current.show({ severity: 'error', summary: 'Error', detail: `Error al obtener los ejercicios por ${filterType}`, life: 3000 });
@@ -148,19 +160,103 @@ const Search = () => {
     }
   };
 
+  const handleEdit = (exerciseP_id) => {
+    setExerciseToEdit(exerciseP_id);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = (exerciseP_id) => {
+    setExerciseToDelete(exerciseP_id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const token = getAccessToken();
+    try {
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/id/${exerciseToDelete}/all-days`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setRecentExercises(recentExercises.filter(exercise => exercise.exerciseP_id !== exerciseToDelete));
+        setFavoriteExercises(favoriteExercises.filter(exercise => exercise.exerciseP_id !== exerciseToDelete));
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Ejercicio eliminado correctamente', life: 3000 });
+      } else {
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio', life: 3000 });
+      }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el ejercicio', life: 3000 });
+    }
+    setIsDeleteModalOpen(false);
+    setExerciseToDelete(null);
+  };
+
+  const toggleFavorite = async (exerciseP_id, isFavorite) => {
+    const token = getAccessToken();
+    const method = isFavorite ? 'POST' : 'DELETE';
+    try {
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/favourite/${exerciseP_id}`, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setRecentExercises((prevExercises) =>
+          prevExercises.map((exercise) =>
+            exercise.exerciseP_id === exerciseP_id ? { ...exercise, Is_Favorite: isFavorite } : exercise
+          )
+        );
+        if (isFavorite) {
+          const favExercise = recentExercises.find(exercise => exercise.exerciseP_id === exerciseP_id);
+          setFavoriteExercises([...favoriteExercises, { ...favExercise, Is_Favorite: true }]);
+        } else {
+          setFavoriteExercises(favoriteExercises.filter(exercise => exercise.exerciseP_id !== exerciseP_id));
+        }
+
+        toast.current.show({ severity: 'success', summary: 'Éxito', detail: isFavorite ? 'Ejercicio añadido a favoritos' : 'Ejercicio eliminado de favoritos', life: 3000 });
+      } else {
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al actualizar los favoritos', life: 3000 });
+      }
+    } catch (error) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al actualizar los favoritos', life: 3000 });
+    }
+  };
+
+  const handleSaveEdit = (updatedExercise) => {
+    const updateExercises = (exercises) => exercises.map((exercise) =>
+      exercise.exerciseP_id === updatedExercise.ExerciseP_id ? { ...exercise, ...updatedExercise } : exercise
+    );
+
+    setRecentExercises((prevExercises) => updateExercises(prevExercises));
+    setFavoriteExercises((prevExercises) => updateExercises(prevExercises));
+
+    setIsEditModalOpen(false);
+  };
 
   const filteredRecentExercises = recentExercises.filter(exercise =>
-    exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+    exercise.name && exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredFavoriteExercises = favoriteExercises.filter(exercise =>
-    exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+    exercise.name && exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const renderExerciseCard = (exercise) => (
     <div key={exercise.exerciseP_id} className="card">
       <div className="card-header">
         <h2 className="exercise-name">{exercise.name}</h2>
+        <div className="card-actions">
+          <FaEdit onClick={() => handleEdit(exercise.exerciseP_id)} />
+          <FaTrash onClick={() => handleDelete(exercise.exerciseP_id)} />
+          {exercise.Is_Favorite ? (
+            <FaHeart onClick={() => toggleFavorite(exercise.exerciseP_id, false)} />
+          ) : (
+            <FaRegHeart onClick={() => toggleFavorite(exercise.exerciseP_id, true)} />
+          )}
+        </div>
       </div>
       <div className="card-body">
         <ul className="exercise-details">
@@ -225,6 +321,23 @@ const Search = () => {
             {filteredExercises.map(renderExerciseCard)}
           </div>
         </>
+      )}
+      {isEditModalOpen && (
+        <EditExerciseModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveEdit}
+          exerciseP_id={exerciseToEdit}
+          showToast={(severity, summary, detail) => toast.current.show({ severity, summary, detail, life: 3000 })}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onConfirm={handleConfirmDelete}
+          onClose={() => setIsDeleteModalOpen(false)}
+          isRoutine={false}
+        />
       )}
     </main>
   );

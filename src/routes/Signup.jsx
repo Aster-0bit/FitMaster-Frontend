@@ -6,6 +6,7 @@ import { API_URL } from '../auth/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Toast } from 'primereact/toast';
+import Confetti from 'react-confetti';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -15,6 +16,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showConfetti, setShowConfetti] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -46,6 +48,7 @@ export default function Signup() {
       if (response.ok) {
         console.log('Usuario registrado');
         setErrorMessage(''); // Clear error message on success
+        setShowConfetti(true); // Show confetti on success
         toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Registro exitoso', life: 3000 });
         setTimeout(() => {
           navigate('/login');
@@ -53,7 +56,7 @@ export default function Signup() {
       } else {
         console.error('Error en el registro');
         setErrorMessage('Error en el registro');
-        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error en el registro intentelo mas tarde', life: 3000 });
+        toast.current.show({ severity: 'error', summary: 'Error', detail: 'El correo electrónico ya está registrado. Por favor, inicia sesión o utiliza otro correo electrónico.', life: 3000 });
       }
     } catch (error) {
       console.error('Error en el registro', error);
@@ -68,6 +71,7 @@ export default function Signup() {
 
   return (
     <div className="signup-page">
+      {showConfetti && <Confetti />}
       <Toast ref={toast} />
       <div className="form-wrapper">
         <div className="form-container">

@@ -31,24 +31,26 @@ const Routine = () => {
   const [loading, setLoading] = useState(true);
   const toast = useRef(null);
 
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   const fetchExercises = async () => {
-    const daysOfWeek = [1, 2, 3, 4, 5, 6, 7];
+    setLoading(true);
     const token = getAccessToken();
-    const exercisePromises = daysOfWeek.map(dayId =>
-      fetch(`https://fitmaster-backend-production.up.railway.app/user/routine/${dayId}`, {
+
+    try {
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/routine/all`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
-      }).then(response => response.json().catch(() => []))
-    );
-
-    try {
-      const exercisesByDay = await Promise.all(exercisePromises);
-      const allExercises = exercisesByDay.flat().map(exercise => ({ ...exercise, day_id: getDayIdByName(exercise.Day_Name) }));
-      setAllExercises(allExercises);
-      setExercises(allExercises.filter(exercise => exercise.day_id === dayInfo.id));
-      console.log('All exercises:', allExercises); // Log para verificar los datos
-      console.log('Filtered exercises for day:', dayInfo.id, allExercises.filter(exercise => exercise.day_id === dayInfo.id)); // Log para verificar los datos filtrados
+      });
+      if (response.ok) {
+        const allExercises = await response.json();
+        const formattedExercises = allExercises.map(exercise => ({ ...exercise, day_id: getDayIdByName(exercise.Day_Name) }));
+        setAllExercises(formattedExercises);
+        setExercises(formattedExercises.filter(exercise => exercise.day_id === dayInfo.id));
+      } else {
+        console.error('Error al obtener los datos de los ejercicios', response.statusText);
+      }
     } catch (error) {
       console.error('Error al obtener los datos de los ejercicios', error);
     } finally {
@@ -118,14 +120,15 @@ const Routine = () => {
   const handleDeleteDay = async (exerciseP_id) => {
     try {
       const token = getAccessToken();
-      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/${exerciseP_id}/day/${dayInfo.id}`, {
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/id/${exerciseP_id}/day/${dayInfo.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       if (response.ok) {
-        setAllExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
+        setAllExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id || exercise.day_id !== dayInfo.id));
+        setExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
         toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Ejercicio eliminado correctamente', life: 3000 });
       } else {
         console.error('Error al eliminar el ejercicio', response.statusText);
@@ -140,7 +143,7 @@ const Routine = () => {
   const handleDeleteAll = async (exerciseP_id) => {
     try {
       const token = getAccessToken();
-      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/${exerciseP_id}`, {
+      const response = await fetch(`https://fitmaster-backend-production.up.railway.app/exercises/id/${exerciseP_id}/all-days`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -148,6 +151,7 @@ const Routine = () => {
       });
       if (response.ok) {
         setAllExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
+        setExercises(prevExercises => prevExercises.filter(exercise => exercise.ExerciseP_id !== exerciseP_id));
         toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Ejercicio eliminado completamente', life: 3000 });
       } else {
         console.error('Error al eliminar el ejercicio completamente', response.statusText);
@@ -229,12 +233,20 @@ const Routine = () => {
     setIsDeleteAllChecked(!isDeleteAllChecked);
   };
 
-  const handleSaveEdit = (updatedExercise) => {
-    fetchExercises();
+  const handleSaveEdit = async (updatedExercise) => {
+    await fetchExercises();
   };
 
-  const handleSaveNewExercise = (newExercise) => {
-    fetchExercises();
+  const handleSaveNewExercise = async (newExercise) => {
+    setLoading(true);
+    try {
+      await wait(3200); // Introduce un retraso de 2 segundos
+      await fetchExercises();
+    } catch (error) {
+      console.error('Error al guardar nuevo ejercicio', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -312,6 +324,7 @@ const Routine = () => {
         onConfirm={handleConfirmDelete}
         onCheckboxChange={handleCheckboxChange}
         isDeleteAllChecked={isDeleteAllChecked}
+        isRoutine={true}
       />
       <AddExerciseModal
         isOpen={isAddExerciseModalOpen}
